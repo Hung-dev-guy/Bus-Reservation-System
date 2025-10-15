@@ -1,6 +1,6 @@
 package com.hungdev.busbookingsystem.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,9 +36,6 @@ public class Booking {
     
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<Payment> payments;
-    
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
-    private List<Refund> refunds;
     
     // Constructors
     public Booking() {
@@ -113,17 +110,9 @@ public class Booking {
     public List<Payment> getPayments() {
         return payments;
     }
-    
+
     public void setPayments(List<Payment> payments) {
         this.payments = payments;
-    }
-    
-    public List<Refund> getRefunds() {
-        return refunds;
-    }
-    
-    public void setRefunds(List<Refund> refunds) {
-        this.refunds = refunds;
     }
     
     // Business methods
