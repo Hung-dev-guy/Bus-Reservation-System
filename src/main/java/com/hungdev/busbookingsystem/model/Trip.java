@@ -2,32 +2,37 @@ package com.hungdev.busbookingsystem.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "trips")
+@Table(name = "trips",
+    indexes = {
+        @Index(name = "trips_route_id_715fed1b", columnList = "route_id"),
+        @Index(name = "trips_bus_id_0f292d2d", columnList = "bus_id")
+    }
+)
 public class Trip {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    
+    private Long id;
+
     @ManyToOne
     @JoinColumn(name = "route_id", nullable = false)
     private Route route;
-    
+
     @ManyToOne
     @JoinColumn(name = "bus_id", nullable = false)
     private Bus bus;
-    
+
     @Column(name = "departure_time", nullable = false)
-    private LocalDateTime departureTime;
-    
+    private OffsetDateTime departureTime;
+
     @Column(name = "arrival_time", nullable = false)
-    private LocalDateTime arrivalTime;
-    
-    @Column(name = "price_per_seat", nullable = false, precision = 12, scale = 2)
+    private OffsetDateTime arrivalTime;
+
+    @Column(name = "price_per_seat", nullable = false, precision = 10, scale = 2)
     private BigDecimal pricePerSeat;
     
     // Relationships
@@ -36,21 +41,21 @@ public class Trip {
     
     // Constructors
     public Trip() {}
-    
-    public Trip(Route route, Bus bus, LocalDateTime departureTime, LocalDateTime arrivalTime, BigDecimal pricePerSeat) {
+
+    public Trip(Route route, Bus bus, OffsetDateTime departureTime, OffsetDateTime arrivalTime, BigDecimal pricePerSeat) {
         this.route = route;
         this.bus = bus;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.pricePerSeat = pricePerSeat;
     }
-    
+
     // Getters and Setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
-    
-    public void setId(Integer id) {
+
+    public void setId(Long id) {
         this.id = id;
     }
     
@@ -70,19 +75,19 @@ public class Trip {
         this.bus = bus;
     }
     
-    public LocalDateTime getDepartureTime() {
+    public OffsetDateTime getDepartureTime() {
         return departureTime;
     }
-    
-    public void setDepartureTime(LocalDateTime departureTime) {
+
+    public void setDepartureTime(OffsetDateTime departureTime) {
         this.departureTime = departureTime;
     }
-    
-    public LocalDateTime getArrivalTime() {
+
+    public OffsetDateTime getArrivalTime() {
         return arrivalTime;
     }
-    
-    public void setArrivalTime(LocalDateTime arrivalTime) {
+
+    public void setArrivalTime(OffsetDateTime arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
     

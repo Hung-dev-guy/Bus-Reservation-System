@@ -1,57 +1,65 @@
 package com.hungdev.busbookingsystem.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "payments")
+@Table(name = "payments",
+    indexes = {
+        @Index(name = "idx_payments_booking_id", columnList = "booking_id"),
+        @Index(name = "idx_payments_status", columnList = "status")
+    }
+)
 public class Payment {
-    
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(columnDefinition = "uuid")
+    private UUID id;
+
     @ManyToOne
     @JoinColumn(name = "booking_id", nullable = false)
     private Booking booking;
-    
-    @Column(nullable = false, precision = 12, scale = 2)
+
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
-    
-    @Column(name = "payment_method", nullable = false, length = 50)
-    private String paymentMethod; // VD: Credit Card, Bank Transfer, E-Wallet
-    
-    @Column(name = "transaction_code", length = 255)
+
+    @Column(name = "payment_method", nullable = false, length = 20)
+    private String paymentMethod;
+
+    @Column(name = "transaction_code", nullable = false, length = 255)
     private String transactionCode;
-    
-    @Column(name = "payment_time")
-    private LocalDateTime paymentTime = LocalDateTime.now();
-    
-    @Column(nullable = false, length = 20)
+
+    @Column(name = "payment_time", nullable = false)
+    private OffsetDateTime paymentTime = OffsetDateTime.now();
+
+    @Column(nullable = false, length = 10)
     private String status; // Succeeded, Failed, Pending
     
     
     // Constructors
     public Payment() {
-        this.paymentTime = LocalDateTime.now();
+        this.paymentTime = OffsetDateTime.now();
         this.status = "Pending";
     }
-    
+
     public Payment(Booking booking, BigDecimal amount, String paymentMethod) {
         this();
         this.booking = booking;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
     }
-    
+
     // Getters and Setters
-    public Integer getId() {
+    public UUID getId() {
         return id;
     }
-    
-    public void setId(Integer id) {
+
+    public void setId(UUID id) {
         this.id = id;
     }
     
@@ -87,19 +95,30 @@ public class Payment {
         this.transactionCode = transactionCode;
     }
     
-    public LocalDateTime getPaymentTime() {
+    public OffsetDateTime getPaymentTime() {
         return paymentTime;
     }
-    
-    public void setPaymentTime(LocalDateTime paymentTime) {
+
+    public void setPaymentTime(OffsetDateTime paymentTime) {
         this.paymentTime = paymentTime;
     }
-    
+
     public String getStatus() {
         return status;
     }
-    
+
     public void setStatus(String status) {
         this.status = status;
     }
-}   
+
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", transactionCode='" + transactionCode + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
+}

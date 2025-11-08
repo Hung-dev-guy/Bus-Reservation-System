@@ -9,12 +9,12 @@ public class Location {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    
+    private Long id;
+
     @Column(nullable = false, length = 255)
     private String name;
-    
-    @Column(nullable = false, length = 255)
+
+    @Column(nullable = false, length = 100)
     private String city;
     
     // Relationships
@@ -33,11 +33,11 @@ public class Location {
     }
     
     // Getters and Setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
-    
-    public void setId(Integer id) {
+
+    public void setId(Long id) {
         this.id = id;
     }
     
