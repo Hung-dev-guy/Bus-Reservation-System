@@ -2,60 +2,69 @@ package com.hungdev.busbookingsystem.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "bookings")
+@Table(name = "bookings",
+    indexes = {
+        @Index(name = "bookings_trip_id_89bc46e9", columnList = "trip_id"),
+        @Index(name = "bookings_user_id_6e734b08", columnList = "user_id")
+    }
+)
 public class Booking {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    
+    private Long id;
+
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
-    
+
     @ManyToOne
     @JoinColumn(name = "trip_id", nullable = false)
     private Trip trip;
-    
-    @Column(name = "booking_time")
-    private LocalDateTime bookingTime = LocalDateTime.now();
-    
-    @Column(name = "total_amount", nullable = false, precision = 12, scale = 2)
+
+    @Column(name = "number_of_seats", nullable = false)
+    private Integer numberOfSeats;
+
+    @Column(name = "booking_time", nullable = false)
+    private OffsetDateTime bookingTime = OffsetDateTime.now();
+
+    @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalAmount;
-    
-    @Column(nullable = false, length = 20)
+
+    @Column(nullable = false, length = 10)
     private String status; // Pending, Confirmed, Cancelled
     
-    // Relationships
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    // Relationships - Using EAGER fetch to avoid lazy initialization issues
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Ticket> tickets;
     
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Payment> payments;
     
     // Constructors
     public Booking() {
-        this.bookingTime = LocalDateTime.now();
+        this.bookingTime = OffsetDateTime.now();
         this.status = "Pending";
     }
-    
-    public Booking(User user, Trip trip, BigDecimal totalAmount) {
+
+    public Booking(User user, Trip trip, Integer numberOfSeats, BigDecimal totalAmount) {
         this();
         this.user = user;
         this.trip = trip;
+        this.numberOfSeats = numberOfSeats;
         this.totalAmount = totalAmount;
     }
-    
+
     // Getters and Setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
-    
-    public void setId(Integer id) {
+
+    public void setId(Long id) {
         this.id = id;
     }
     
@@ -75,26 +84,34 @@ public class Booking {
         this.trip = trip;
     }
     
-    public LocalDateTime getBookingTime() {
+    public Integer getNumberOfSeats() {
+        return numberOfSeats;
+    }
+
+    public void setNumberOfSeats(Integer numberOfSeats) {
+        this.numberOfSeats = numberOfSeats;
+    }
+
+    public OffsetDateTime getBookingTime() {
         return bookingTime;
     }
-    
-    public void setBookingTime(LocalDateTime bookingTime) {
+
+    public void setBookingTime(OffsetDateTime bookingTime) {
         this.bookingTime = bookingTime;
     }
-    
+
     public BigDecimal getTotalAmount() {
         return totalAmount;
     }
-    
+
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
-    
+
     public String getStatus() {
         return status;
     }
-    
+
     public void setStatus(String status) {
         this.status = status;
     }

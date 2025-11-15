@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+             https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="bus-booking-pu" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!-- Entity Classes -->
+        <class>com.hungdev.busbookingsystem.model.User</class>
+        <class>com.hungdev.busbookingsystem.model.UserSession</class>
+        <class>com.hungdev.busbookingsystem.model.Bus</class>
+        <class>com.hungdev.busbookingsystem.model.Seat</class>
+        <class>com.hungdev.busbookingsystem.model.Location</class>
+        <class>com.hungdev.busbookingsystem.model.Route</class>
+        <class>com.hungdev.busbookingsystem.model.Trip</class>
+        <class>com.hungdev.busbookingsystem.model.Booking</class>
+        <class>com.hungdev.busbookingsystem.model.Ticket</class>
+        <class>com.hungdev.busbookingsystem.model.Payment</class>
+
+        <properties>
+            <!-- PostgreSQL Connection Properties -->
+            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/bus_booking_management"/>
+            <property name="jakarta.persistence.jdbc.user" value="postgres"/>
+            <property name="jakarta.persistence.jdbc.password" value="hieudevdut277"/>
+
+            <!-- Hibernate Properties -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+
+            <!-- Schema generation -->
+            <!-- Options: none, create, drop, create-drop, validate, update -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+            <!-- Show SQL queries in console -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+
+            <!-- SQL comments -->
+            <property name="hibernate.use_sql_comments" value="true"/>
+
+            <!-- Connection Pool Settings (using HikariCP) -->
+            <property name="hibernate.hikari.minimumIdle" value="5"/>
+            <property name="hibernate.hikari.maximumPoolSize" value="20"/>
+            <property name="hibernate.hikari.idleTimeout" value="300000"/>
+
+            <!-- Enable second-level cache (optional) -->
+            <property name="hibernate.cache.use_second_level_cache" value="false"/>
+            <property name="hibernate.cache.use_query_cache" value="false"/>
+        </properties>
+    </persistence-unit>
+
+</persistence>

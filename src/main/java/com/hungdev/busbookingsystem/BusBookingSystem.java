@@ -3,6 +3,8 @@ package com.hungdev.busbookingsystem;
 import com.hungdev.busbookingsystem.model.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -24,16 +26,16 @@ public class BusBookingSystem {
         // Step 2: Create Route
         System.out.println("STEP 2: Creating Route");
         System.out.println("----------------------");
-        Route route = new Route(haNoi, hoChiMinh, 1700); // Nhớ thêm các khoảng cách của các cặp tỉnh khác
+        Route route = new Route(haNoi, hoChiMinh, 1700.0); // Nhớ thêm các khoảng cách của các cặp tỉnh khác
         System.out.println("Created Route: " + route.getStartLocation().getCity() +
                          " -> " + route.getEndLocation().getCity() +
-                         " (" + route.getDistance() + " km)");
+                         " (" + route.getDistanceKm() + " km)");
         System.out.println();
 
         // Step 3: Create Bus
         System.out.println("STEP 3: Creating Bus");
         System.out.println("--------------------");
-        Bus bus = new Bus("29A-12345", "Hyundai Universe", 45);
+        Bus bus = new Bus("29A-12345", "Hyundai Universe", 45, 2020);
         System.out.println("Created Bus: License Plate = " + bus.getLicensePlate() +
                          ", Model = " + bus.getModel() +
                          ", Total Seats = " + bus.getTotalSeats());
@@ -42,8 +44,8 @@ public class BusBookingSystem {
         // Step 4: Create Trip
         System.out.println("STEP 4: Creating Trip");
         System.out.println("---------------------");
-        LocalDateTime departureTime = LocalDateTime.now().plusDays(1).withHour(8).withMinute(0).withSecond(0);
-        LocalDateTime arrivalTime = departureTime.plusHours(28);
+        OffsetDateTime departureTime = OffsetDateTime.now(ZoneOffset.UTC).plusDays(1).withHour(8).withMinute(0).withSecond(0).withNano(0);
+        OffsetDateTime arrivalTime = departureTime.plusHours(28);
         BigDecimal pricePerSeat = new BigDecimal("500000");
 
         Trip trip = new Trip(route, bus, departureTime, arrivalTime, pricePerSeat);
@@ -73,7 +75,7 @@ public class BusBookingSystem {
         int numberOfSeats = 3;
         BigDecimal totalAmount = pricePerSeat.multiply(new BigDecimal(numberOfSeats));
 
-        Booking booking = new Booking(customer, trip, totalAmount);
+        Booking booking = new Booking(customer, trip, numberOfSeats, totalAmount);
         booking.setTickets(new ArrayList<>());
         System.out.println("Created Booking:");
         System.out.println("  Customer: " + customer.getUsername());
@@ -88,7 +90,10 @@ public class BusBookingSystem {
         System.out.println("------------------------");
         String[] seatNumbers = {"A1", "A2", "A3"};
         for (String seatNumber : seatNumbers) {
-            Ticket ticket = new Ticket(booking, seatNumber, pricePerSeat);
+            // Create a seat for this demo (in real app, seats would be pre-created)
+            Seat seat = new Seat(seatNumber, bus);
+            String passengerName = customer.getFirstName() + " " + customer.getLastName();
+            Ticket ticket = new Ticket(booking, trip, seat, passengerName, pricePerSeat);
             booking.getTickets().add(ticket);
             System.out.println("Created Ticket: Seat " + seatNumber + " - Price: " + pricePerSeat + " VND");
         }
@@ -121,7 +126,7 @@ public class BusBookingSystem {
         System.out.println("Customer: " + customer.getFirstName() + " " + customer.getLastName() +
                          " (@" + customer.getUsername() + ")");
         System.out.println("Route: " + route.getStartLocation().getName() + " -> " + route.getEndLocation().getName());
-        System.out.println("Distance: " + route.getDistance() + " km");
+        System.out.println("Distance: " + route.getDistanceKm() + " km");
         System.out.println("Bus: " + bus.getModel() + " (" + bus.getLicensePlate() + ")");
         System.out.println("Departure: " + trip.getDepartureTime().format(formatter));
         System.out.println("Arrival: " + trip.getArrivalTime().format(formatter));
