@@ -32,7 +32,7 @@
 
             <!-- Schema generation -->
             <!-- Options: none, create, drop, create-drop, validate, update -->
-            <property name="hibernate.hbm2ddl.auto" value="validate"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
 
             <!-- Show SQL queries in console -->
             <property name="hibernate.show_sql" value="true"/>

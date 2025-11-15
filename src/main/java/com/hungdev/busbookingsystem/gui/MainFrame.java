@@ -96,19 +96,39 @@ public class MainFrame extends JFrame {
         dashboardTitle.setFont(new Font("Arial", Font.BOLD, 24));
         dashboardTitle.setForeground(new Color(52, 73, 94));
 
-        // Main content area
-        JPanel centerPanel = new JPanel(new GridLayout(2, 2, 20, 20));
-        centerPanel.setBackground(new Color(245, 245, 245));
-
-        // Add dashboard cards
-        centerPanel.add(createDashboardCard("Search Trips", "Find and book bus tickets",
-                new Color(52, 152, 219), "🔍"));
-        centerPanel.add(createDashboardCard("My Bookings", "View your ticket bookings",
-                new Color(46, 204, 113), "📋"));
-        centerPanel.add(createDashboardCard("Profile", "Manage your account",
-                new Color(155, 89, 182), "👤"));
-        centerPanel.add(createDashboardCard("Help & Support", "Get assistance",
-                new Color(241, 196, 15), "❓"));
+        // Main content area - adjust grid based on role
+        JPanel centerPanel;
+        if ("ADMIN".equals(currentUser.getRole())) {
+            // Admin dashboard with 3x2 grid
+            centerPanel = new JPanel(new GridLayout(2, 3, 20, 20));
+            centerPanel.setBackground(new Color(245, 245, 245));
+            
+            centerPanel.add(createDashboardCard("Admin Panel", "Manage system",
+                    new Color(231, 76, 60), "⚙️"));
+            centerPanel.add(createDashboardCard("Search Trips", "Find and book bus tickets",
+                    new Color(52, 152, 219), "🔍"));
+            centerPanel.add(createDashboardCard("My Bookings", "View your ticket bookings",
+                    new Color(46, 204, 113), "📋"));
+            centerPanel.add(createDashboardCard("Profile", "Manage your account",
+                    new Color(155, 89, 182), "👤"));
+            centerPanel.add(createDashboardCard("Users", "Manage users",
+                    new Color(230, 126, 34), "👥"));
+            centerPanel.add(createDashboardCard("Reports", "View statistics",
+                    new Color(241, 196, 15), "📊"));
+        } else {
+            // Regular user dashboard with 2x2 grid
+            centerPanel = new JPanel(new GridLayout(2, 2, 20, 20));
+            centerPanel.setBackground(new Color(245, 245, 245));
+            
+            centerPanel.add(createDashboardCard("Search Trips", "Find and book bus tickets",
+                    new Color(52, 152, 219), "🔍"));
+            centerPanel.add(createDashboardCard("My Bookings", "View your ticket bookings",
+                    new Color(46, 204, 113), "📋"));
+            centerPanel.add(createDashboardCard("Profile", "Manage your account",
+                    new Color(155, 89, 182), "👤"));
+            centerPanel.add(createDashboardCard("Help & Support", "Get assistance",
+                    new Color(241, 196, 15), "❓"));
+        }
 
         contentPanel.add(dashboardTitle, BorderLayout.NORTH);
         contentPanel.add(centerPanel, BorderLayout.CENTER);
@@ -164,10 +184,7 @@ public class MainFrame extends JFrame {
             }
 
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                JOptionPane.showMessageDialog(MainFrame.this,
-                        "Feature coming soon: " + title,
-                        "Information",
-                        JOptionPane.INFORMATION_MESSAGE);
+                handleCardClick(title);
             }
         });
 
@@ -190,7 +207,94 @@ public class MainFrame extends JFrame {
         }
     }
 
+    private void handleCardClick(String cardTitle) {
+        switch (cardTitle) {
+            case "Admin Panel":
+                openAdminDashboard();
+                break;
+            case "Search Trips":
+                openBookingFlowFrame();
+                break;
+            case "My Bookings":
+                openMyBookingsFrame();
+                break;
+            case "Profile":
+                openProfileFrame();
+                break;
+            case "Users":
+                openUserManagement();
+                break;
+            case "Reports":
+                openReports();
+                break;
+            case "Help & Support":
+                JOptionPane.showMessageDialog(this,
+                        "Feature coming soon: " + cardTitle,
+                        "Information",
+                        JOptionPane.INFORMATION_MESSAGE);
+                break;
+        }
+    }
+
+    private void openBookingFlowFrame() {
+        BookingFlowFrame bookingFlowFrame = new BookingFlowFrame(currentUser, this);
+        bookingFlowFrame.setVisible(true);
+    }
+
+    private void openMyBookingsFrame() {
+        MyBookingsFrame bookingsFrame = new MyBookingsFrame(currentUser, this);
+        bookingsFrame.setVisible(true);
+    }
+
+    private void openProfileFrame() {
+        UserProfileFrame profileFrame = new UserProfileFrame(currentUser, this);
+        profileFrame.setVisible(true);
+    }
+
+    private void openAdminDashboard() {
+        if ("ADMIN".equals(currentUser.getRole())) {
+            AdminDashboardFrame adminFrame = new AdminDashboardFrame(currentUser);
+            adminFrame.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Access denied. Admin privileges required.",
+                    "Access Denied",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void openUserManagement() {
+        if ("ADMIN".equals(currentUser.getRole())) {
+            AdminUserManagementFrame userFrame = new AdminUserManagementFrame(
+                currentUser, new AdminDashboardFrame(currentUser));
+            userFrame.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Access denied. Admin privileges required.",
+                    "Access Denied",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void openReports() {
+        if ("ADMIN".equals(currentUser.getRole())) {
+            JOptionPane.showMessageDialog(this,
+                    "Reports and statistics feature coming soon!",
+                    "Information",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Access denied. Admin privileges required.",
+                    "Access Denied",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
     }
 }

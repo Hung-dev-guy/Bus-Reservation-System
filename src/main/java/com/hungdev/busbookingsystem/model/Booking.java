@@ -38,11 +38,11 @@ public class Booking {
     @Column(nullable = false, length = 10)
     private String status; // Pending, Confirmed, Cancelled
     
-    // Relationships
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    // Relationships - Using EAGER fetch to avoid lazy initialization issues
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Ticket> tickets;
     
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Payment> payments;
     
     // Constructors

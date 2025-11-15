@@ -24,10 +24,10 @@ public class LoginFrame extends JFrame {
 
     private void initializeUI() {
         setTitle("Bus Booking System - Login");
-        setSize(450, 350);
+        setSize(500, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(false);
+        setResizable(true);
 
         // Main panel with padding
         JPanel mainPanel = new JPanel();
@@ -106,26 +106,43 @@ public class LoginFrame extends JFrame {
         gbc.insets = new Insets(20, 5, 5, 5);
 
         loginButton = new JButton("Login");
-        loginButton.setFont(new Font("Arial", Font.BOLD, 14));
-        loginButton.setBackground(new Color(41, 128, 185));
+        loginButton.setFont(new Font("Arial", Font.BOLD, 18));
+        loginButton.setBackground(new Color(220, 53, 69));
         loginButton.setForeground(Color.WHITE);
+        loginButton.setOpaque(true);
+        loginButton.setBorderPainted(false);
         loginButton.setFocusPainted(false);
-        loginButton.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
+        loginButton.setContentAreaFilled(true);
+        loginButton.setPreferredSize(new Dimension(200, 45));
         loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         loginButton.addActionListener(e -> handleLogin());
 
-        registerButton = new JButton("Sign Up");
-        registerButton.setFont(new Font("Arial", Font.PLAIN, 14));
-        registerButton.setBackground(new Color(46, 204, 113));
+        registerButton = new JButton("<html><center>Sign Up</center></html>");
+        registerButton.setFont(new Font("Arial", Font.BOLD, 18));
+        registerButton.setBackground(new Color(220, 53, 69));
         registerButton.setForeground(Color.WHITE);
+        registerButton.setOpaque(true);
+        registerButton.setBorderPainted(false);
         registerButton.setFocusPainted(false);
-        registerButton.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
+        registerButton.setContentAreaFilled(true);
+        registerButton.setPreferredSize(new Dimension(200, 45));
         registerButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         registerButton.addActionListener(e -> openRegisterFrame());
 
         buttonPanel.add(loginButton);
-        buttonPanel.add(registerButton);
         formPanel.add(buttonPanel, gbc);
+
+        // Sign up section
+        JPanel signupPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        signupPanel.setBackground(Color.WHITE);
+        gbc.gridy = 5;
+        gbc.insets = new Insets(10, 5, 5, 5);
+
+        JLabel signupLabel = new JLabel("Don't have an account? ");
+        signupLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        signupPanel.add(signupLabel);
+        signupPanel.add(registerButton);
+        formPanel.add(signupPanel, gbc);
 
         // Add panels to main panel
         mainPanel.add(titlePanel, BorderLayout.NORTH);

@@ -197,4 +197,97 @@ public class UserService {
         // Add more password strength requirements as needed
         return true;
     }
+
+    /**
+     * Update user information
+     */
+    public boolean updateUser(Long userId, String fullName, String email, String phoneNumber) {
+        try {
+            JPAUtil.executeInTransaction(em -> {
+                User user = em.find(User.class, userId);
+                if (user != null) {
+                    if (fullName != null && !fullName.trim().isEmpty()) {
+                        // Split full name into first and last name
+                        String[] nameParts = fullName.trim().split("\\s+", 2);
+                        user.setFirstName(nameParts[0]);
+                        if (nameParts.length > 1) {
+                            user.setLastName(nameParts[1]);
+                        }
+                    }
+                    if (email != null && !email.trim().isEmpty()) {
+                        user.setEmail(email.trim());
+                    }
+                    // Note: phoneNumber is not currently in the User model
+                    // TODO: Add phoneNumber field to User model if needed
+                    em.merge(user);
+                    logger.info("User updated successfully: {}", userId);
+                }
+            });
+            return true;
+        } catch (Exception e) {
+            logger.error("Failed to update user", e);
+            return false;
+        }
+    }
+
+    /**
+     * Change user password
+     */
+    public boolean changePassword(Long userId, String oldPassword, String newPassword) {
+        try {
+            User user = getUserById(userId);
+            if (user == null) {
+                logger.warn("User not found: {}", userId);
+                return false;
+            }
+
+            // Verify old password
+            if (!PasswordUtil.verifyPassword(oldPassword, user.getPassword())) {
+                logger.warn("Invalid old password for user: {}", userId);
+                return false;
+            }
+
+            // Validate new password
+            if (!isPasswordValid(newPassword)) {
+                logger.warn("New password does not meet requirements");
+                return false;
+            }
+
+            // Hash and update new password
+            String hashedPassword = PasswordUtil.hashPassword(newPassword);
+            JPAUtil.executeInTransaction(em -> {
+                User u = em.find(User.class, userId);
+                if (u != null) {
+                    u.setPassword(hashedPassword);
+                    em.merge(u);
+                    logger.info("Password changed successfully for user: {}", userId);
+                }
+            });
+
+            return true;
+        } catch (Exception e) {
+            logger.error("Failed to change password", e);
+            return false;
+        }
+    }
+
+    /**
+     * Delete (deactivate) user account
+     */
+    public boolean deleteUser(Long userId) {
+        try {
+            JPAUtil.executeInTransaction(em -> {
+                User user = em.find(User.class, userId);
+                if (user != null) {
+                    user.setIsActive(false);
+                    em.merge(user);
+                    logger.info("User deactivated successfully: {}", userId);
+                }
+            });
+            return true;
+        } catch (Exception e) {
+            logger.error("Failed to delete user", e);
+            return false;
+        }
+    }
 }

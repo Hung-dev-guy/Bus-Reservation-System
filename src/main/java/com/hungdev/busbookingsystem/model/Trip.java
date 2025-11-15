@@ -35,8 +35,8 @@ public class Trip {
     @Column(name = "price_per_seat", nullable = false, precision = 10, scale = 2)
     private BigDecimal pricePerSeat;
     
-    // Relationships
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
+    // Relationships - Using EAGER fetch to avoid lazy initialization issues
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Booking> bookings;
     
     // Constructors
